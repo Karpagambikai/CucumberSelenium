@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="1" passed="1">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Custom suite" duration-ms="276" started-at="2016-08-08T14:00:38Z" finished-at="2016-08-08T14:00:39Z">
+    <groups>
+      <group name="cucumber">
+        <method signature="AbstractTestNGCucumberTests.feature(cucumber.api.testng.CucumberFeatureWrapper)[pri:0, instance:com.perficient.tests.RunCukes@153f5a29]" name="feature" class="cucumber.api.testng.AbstractTestNGCucumberTests"/>
+      </group> <!-- cucumber -->
+    </groups>
+    <test name="CucumberTest 1" duration-ms="276" started-at="2016-08-08T14:00:38Z" finished-at="2016-08-08T14:00:39Z">
+      <class name="com.perficient.tests.RunCukes">
+        <test-method status="PASS" signature="setUpClass()[pri:0, instance:com.perficient.tests.RunCukes@153f5a29]" name="setUpClass" is-config="true" duration-ms="143" started-at="2016-08-08T19:30:38Z" finished-at="2016-08-08T19:30:39Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUpClass -->
+        <test-method status="PASS" signature="feature(cucumber.api.testng.CucumberFeatureWrapper)[pri:0, instance:com.perficient.tests.RunCukes@153f5a29]" name="feature" duration-ms="73" started-at="2016-08-08T19:30:39Z" description="Runs Cucumber Feature" data-provider="features" finished-at="2016-08-08T19:30:39Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[Test feature]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- feature -->
+        <test-method status="PASS" signature="tearDownClass()[pri:0, instance:com.perficient.tests.RunCukes@153f5a29]" name="tearDownClass" is-config="true" duration-ms="2" started-at="2016-08-08T19:30:39Z" finished-at="2016-08-08T19:30:39Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDownClass -->
+      </class> <!-- com.perficient.tests.RunCukes -->
+    </test> <!-- CucumberTest 1 -->
+  </suite> <!-- Custom suite -->
+</testng-results>
