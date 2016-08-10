@@ -1,24 +1,29 @@
 package com.perficient.utils;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.safari.SafariDriver;
 
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 
 
-public class Driver extends BrowserUtilities{
+public class Driver{
 
-	public static WebDriver driver;
+	public static ThreadLocal<WebDriver> driver = new ThreadLocal<WebDriver>();
 	public String browser = null;
 	public String url = null;
+	public File path = new File("src/test/resources/drivers");
 	CommonFunctions cfun = new CommonFunctions();
 	
-	
-	
 	@Before
-	public WebDriver launchBrowser(){
+	public WebDriver launchBrowser(WebDriver driver){
 		browser = cfun.readProperties("browser");
 		System.out.println("Browser Type"+browser);
 		url = cfun.readProperties("url");
@@ -43,9 +48,38 @@ public class Driver extends BrowserUtilities{
 	}
 	
 	@After
-	public WebDriver quitBrowser(){	
+	public WebDriver quitBrowser(WebDriver driver){	
 		driver.quit();
 		return driver;
 	}
 	
+	public WebDriver launchFirefoxBrowser(WebDriver driver){  
+    	driver = new FirefoxDriver();
+    	return driver;
+      }
+	
+	public WebDriver launchInternetExplorerDriver(WebDriver driver){   	  
+  	  DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
+  	  capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
+  	  System.setProperty("webdriver.ie.driver",path.getAbsolutePath() + "\\IEDriverServer.exe");
+  	  driver = new InternetExplorerDriver();
+  	  return driver;    	  
+    }
+    
+    public WebDriver launchChromeDriver(WebDriver driver){  
+  	  System.setProperty("webdriver.chrome.driver",path.getAbsolutePath() + "\\chromedriver.exe");
+  	  driver = new ChromeDriver();
+  	  return driver;
+    }
+    
+    public WebDriver launchSafariDriver(WebDriver driver){
+  	  driver = new SafariDriver();
+  	  return driver;
+    }
+    
+    public WebDriver getApplicationUnderTest(WebDriver driver,String url){
+  	  driver.get(url);
+  	  return driver;
+    }
+		
 }
