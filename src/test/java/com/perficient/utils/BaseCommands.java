@@ -453,7 +453,7 @@ public class BaseCommands {
  		alert.accept();
  	}
  	
- // The expected condition waits for an element to be click-able.	
+    // The expected condition waits for an element to be click-able.	
     // i.e. it should be present/displayed/visible on the screen as well as enabled.
     public void waitForClickable(By by) {
     	waitForElement(by);
