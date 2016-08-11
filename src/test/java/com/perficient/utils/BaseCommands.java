@@ -1,14 +1,32 @@
 package com.perficient.utils;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class BaseCommands {
+	
+	public int waitTime = 10;
+	WebDriverWait wait = new WebDriverWait(getDriver(), waitTime);
 	
 	/*public By locatorValue(String locatorType,String locatorValue){
 		   
@@ -279,5 +297,255 @@ public class BaseCommands {
  		Actions builder=new Actions(getDriver());
  		builder.dragAndDropBy(findElement(source), xOffset, yOffset);
  	} 
+ 	
+ 	
+ 	// To get the title of the page
+ 	
+ 	public String getTitle(){
+ 		String pageTitle = getDriver().getTitle();
+ 		return pageTitle;
+ 	}
+ 	
+ 	// To get URL
+ 	
+ 	public String getCurrentUrl(){
+ 		String pageUrl = getDriver().getCurrentUrl();
+ 		return pageUrl;
+ 	}
+ 	
+ 	// To get page source
+ 	
+ 	public String getPageSource(){
+ 		String pagesource = getDriver().getPageSource();
+ 		return pagesource;
+ 	}
+ 	
+ 	// Window Handles
+ 	
+ 	//To get main window handle
+ 	
+ 	public String getMainWindowHandle(){
+ 		String mainWindow = getDriver().getWindowHandle();
+ 		return mainWindow;
+ 	}
+ 	
+ 	//To get the window handle of all the current windows
+ 	
+ 	public Set<String> getAllWindowHandles(){
+ 		Set<String> windowHandles =  getDriver().getWindowHandles();
+ 		return windowHandles;
+ 	}
     
+ 	// To switch between named windows
+ 	
+ 	public void switchWindow(String windowname){
+ 		getDriver().switchTo().window(windowname);
+ 	}
+ 	
+ 	
+ 	// To close the current browser
+ 	
+ 	public void closeBrowser(){
+ 		getDriver().close();
+ 	}
+ 	
+ 	
+ 	// To close all opened windows except main window
+ 	
+ 	public void closeWindows(){
+ 		String mainWind = getMainWindowHandle();
+ 		Set<String> childWind = getAllWindowHandles();
+ 		for(String currentWindow:childWind){
+ 		if(!currentWindow.equals(mainWind)){
+ 			switchWindow(currentWindow);
+ 			closeBrowser();
+ 		}
+ 		switchWindow(mainWind);
+ 		}
+ 	}
+ 	
+ 	// To switch to frame by index
+ 	
+ 	public void switchFrameByIndex(int index){
+ 		getDriver().switchTo().frame(index);
+ 	}
+ 	
+ 	// To switch to frame by id or name
+ 	
+ 	public void switchFrameById(String locator){
+ 		getDriver().switchTo().frame(locator);
+ 	}
+ 	
+ 	// To check element is present
+ 	public boolean isElePresent(By by){
+ 		boolean elementPresent;
+ 		int eleSize = findElements(by).size();
+ 		if(eleSize!=0){
+ 			elementPresent = true;
+ 			return elementPresent;
+ 		}else{
+ 			elementPresent = false;
+ 			return elementPresent;
+ 		}
+ 	}
+ 	
+ 	
+ 	// To switch to frame by frame element
+ 	
+ 	public void switchFrameByFrameElement(By by){
+ 		try{
+ 			if(findElements(by).size()!=0){
+ 				WebElement frameElement = findElement(by);
+ 				getDriver().switchTo().frame(frameElement);	
+ 			}
+ 		}catch(NoSuchFrameException e) {
+			System.out.println("Unable to locate frame with element " + e.getStackTrace());
+ 			
+ 		}catch(StaleElementReferenceException e){
+ 			System.out.println("Unable to locate frame with element " + e.getStackTrace());
+ 		}catch(Exception e){
+ 			System.out.println("Unable to locate frame with element " + e.getStackTrace());
+ 		}
+ 	   
+ 	}
+ 	
+ 	// switching between multiple frames
+ 	
+ 	public void switchBetweenFrames(String parentFrame, String childFrame){
+ 		getDriver().switchTo().frame(parentFrame).switchTo().frame(childFrame);
+ 	}
+ 	
+ 	// To navigate back to page from frame
+ 	
+ 	public void switchBack(){
+ 		getDriver().switchTo().defaultContent();
+ 	}
+ 	
+ 	// To click ok button in the alert
+ 	
+ 	public void acceptAlert(){
+ 		Alert alert = getDriver().switchTo().alert();
+ 		alert.accept();
+ 	}
+ 	
+ 	
+ 	// To click cancel button in the alert
+ 	
+ 	public void dismissAlert(){
+ 		Alert alert = getDriver().switchTo().alert();
+ 		alert.dismiss();
+ 	}
+ 	
+ 	// To get the text present on the alert
+ 	
+ 	public String getAlertText(){
+ 		Alert alert = getDriver().switchTo().alert();
+ 		String alertText = alert.getText();
+ 		return alertText;
+ 	}
+ 	
+ 	// To pass the text to the prompt pop up
+ 	
+ 	public void sendKeysAlert(String alertText){
+ 		Alert alert = getDriver().switchTo().alert();
+ 		alert.sendKeys(alertText);
+ 		System.out.println(alert.getText());
+ 		alert.accept();
+ 	}
+ 	
+ // The expected condition waits for an element to be click-able.	
+    // i.e. it should be present/displayed/visible on the screen as well as enabled.
+    public void waitForClickable(By by) {
+    	waitForElement(by);
+		wait.until(ExpectedConditions.elementToBeClickable(by));
+	}
+    
+    // An expectation for checking that an element is present on the DOM of a page.
+    public void waitForElement(By by){
+    	wait.until(ExpectedConditions.presenceOfElementLocated(by));
+    }
+    
+    // An expectation for checking that there is at least one element present on a web page.
+    public void waitForAllElements(By by){
+    	wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
+    }
+
+	// An expectation for checking that an element is present on the DOM of a page and visible.
+    public void waitForVisibility(By by) {
+		wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+	}
+	
+	// An expectation for checking that an element is either invisible or not present on the DOM.
+    public void waitForInvisibility(By by){
+		wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
+	}
+	
+	// An expectation for checking if the given element is selected.
+    public void waitForElementToBeSelected(By by){
+		wait.until(ExpectedConditions.elementToBeSelected(by));
+	}
+    
+    // check Element present by By
+ 	public static boolean isElementPresent(By by) {
+ 		try {
+ 			getDriver().findElement(by);
+ 			return true;
+ 		} catch (NoSuchElementException e) {
+ 			return false;
+ 		}
+ 	}
+	
+    // The expected condition waits for an alert box to appear.
+    public void waitForAlertPresent(){
+		//wait.until(ExpectedConditions.alertIsPresent());
+		if(wait.until(ExpectedConditions.alertIsPresent())==null)
+		    System.out.println("alert was not present");
+		else
+		    System.out.println("alert was present");
+	}
+	
+    // wait for page to load
+	public void pageLoadTimeout(int seconds) {
+		getDriver().manage().timeouts().pageLoadTimeout(waitTime, TimeUnit.SECONDS);
+	}
+	
+	// create screen shots
+	public static void getScreenshot(String Status) throws Exception {
+		File dir = new File("");
+		if (!dir.exists()) {
+			dir.mkdir();
+		}
+		File srcfile = ((TakesScreenshot) getDriver()).getScreenshotAs(OutputType.FILE);
+		FileUtils.copyFile(srcfile,new File(new SimpleDateFormat("'resources/screenshots/"+ Status + "_Screenshot_'yyyyMMdd_hhmmss'.png'").format(new Date())));
+	}
+    
+	// This methods Load a new web page in the current browser window. 
+	// It is an Overloaded version of to(String) that makes it easy to pass in a URL.
+	public void navigateToURL(String url)
+	{
+		getDriver().navigate().to(url);
+	}
+	
+	// To move back a single "item" in the web browser's history. 
+	// And it will not perform any action if you are on the first page viewed.
+	public void navigateBack()
+    {
+		getDriver().navigate().back();
+	}
+    
+	// To move a single "item" forward in the web browser's history. 
+	// And it will not perform any action if we are on the latest page viewed.
+	public void navigateForward()
+    {
+		getDriver().navigate().forward();
+	}
+	
+	// It refreshes the current web page.
+	public void navigateRefresh()
+    {
+		//getDriver().navigate().refresh();
+		Actions actions = new Actions(getDriver());
+		actions.keyDown(Keys.CONTROL).sendKeys(Keys.F5).perform();
+    }
+ 	
 }
